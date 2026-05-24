@@ -1,0 +1,26 @@
+# =========================
+# Operating System Files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# IDEs and Editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Frontend (Future-proofing)
+# =========================
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+dist/
+build/
+
+.env
