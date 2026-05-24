@@ -5,7 +5,7 @@ from users.views import LoginView, RegisterView, LogoutView, UserProfileView
  
 urlpatterns = [
     path('admin/', admin.site.urls),
-    Auth endpoints
+    # Auth endpoints
     path('api/auth/register/', RegisterView.as_view()),
     path('api/auth/login/',    LoginView.as_view()),
     path('api/auth/logout/',   LogoutView.as_view()),
