@@ -1,0 +1,17 @@
+Django==5.0.6
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.4.0
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+celery==5.4.0
+redis==5.0.7
+django-celery-beat==2.6.0
+django-celery-results==2.5.1
+amadeus==8.1.0
+twilio==9.2.2
+django-filter==24.2
+Pillow==10.4.0
+gunicorn==22.0.0
+whitenoise==6.7.0
+requests==2.32.3
