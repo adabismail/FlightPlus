@@ -18,7 +18,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
  
     def create(self, validated_data):
-        # calls our custom create_user which hashes the password
+        # New accounts start inactive; email OTP verification flips is_active on.
+        validated_data['is_active'] = False
         return User.objects.create_user(**validated_data)
  
  

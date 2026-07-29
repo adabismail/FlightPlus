@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils import timezone
  
  
 class UserManager(BaseUserManager):
@@ -36,3 +37,18 @@ class User(AbstractBaseUser, PermissionsMixin):
  
     class Meta:
         db_table = 'users'     # exact table name in PostgreSQL
+
+
+class EmailOTP(models.Model):
+    """A short-lived 6-digit code emailed to verify a new signup."""
+    email      = models.EmailField(db_index=True)
+    code       = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        db_table = 'email_otps'
+        ordering = ['-created_at']
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at

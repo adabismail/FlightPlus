@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenRefreshView
-from users.views import LoginView, RegisterView, LogoutView, UserProfileView
+from users.views import (LoginView, RegisterView, LogoutView, UserProfileView,
+                         VerifyOTPView, ResendOTPView)
 
 
 def health(_request):
@@ -14,8 +15,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health/', health),
     # Auth endpoints
-    path('api/auth/register/', RegisterView.as_view()),
-    path('api/auth/login/',    LoginView.as_view()),
+    path('api/auth/register/',    RegisterView.as_view()),
+    path('api/auth/verify-otp/',  VerifyOTPView.as_view()),
+    path('api/auth/resend-otp/',  ResendOTPView.as_view()),
+    path('api/auth/login/',       LoginView.as_view()),
     path('api/auth/logout/',   LogoutView.as_view()),
     path('api/auth/refresh/',  TokenRefreshView.as_view()),
     path('api/auth/me/',       UserProfileView.as_view()),
