@@ -156,7 +156,7 @@ CELERY_CACHE_BACKEND = 'django-cache'
 #      EMAIL_HOST_USER / EMAIL_HOST_PASSWORD   -> SMTP credentials
 #      TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN  -> Twilio SMS
 #      TWILIO_PHONE_NUMBER                     -> Twilio sender number
-#      AMADEUS_CLIENT_ID / AMADEUS_CLIENT_SECRET -> Amadeus flight data
+#      RAPIDAPI_KEY                            -> Sky-Scrapper flight search
 # ============================================================
 
 # --- Email (SMTP) ---
@@ -179,7 +179,6 @@ TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')    # API KEY: Twilio Accoun
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')      # API KEY: Twilio Auth Token
 TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')  # API KEY: Twilio sender phone number
 
-# --- Amadeus (live flight prices) ---
-AMADEUS_CLIENT_ID = os.getenv('AMADEUS_CLIENT_ID')          # API KEY: Amadeus client id
-AMADEUS_CLIENT_SECRET = os.getenv('AMADEUS_CLIENT_SECRET')  # API KEY: Amadeus client secret
-AMADEUS_HOSTNAME = os.getenv('AMADEUS_HOSTNAME', 'test')    # 'test' (sandbox) or 'production'
+# --- Sky-Scrapper via RapidAPI (live flight search + prices) ---
+RAPIDAPI_KEY  = os.getenv('RAPIDAPI_KEY')                                  # API KEY: your RapidAPI key
+RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST', 'sky-scrapper.p.rapidapi.com')
