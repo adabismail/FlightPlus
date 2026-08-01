@@ -1,4 +1,4 @@
-# FlightPulse ✈
+# FlightPulse
 
 A real-time flight **deal tracker** that alerts users when fares between selected
 cities drop below a target price — a lightweight "Skyscanner + Notify."
