@@ -16,12 +16,10 @@ class TrackedRouteSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        # IATA codes are always uppercase (DEL, DXB, ...)
         for key in ('from_code', 'to_code'):
             if key in attrs:
                 attrs[key] = attrs[key].upper()
 
-        # Normalize preferred airline codes: uppercase, no spaces (EK,AI)
         if 'preferred_airlines' in attrs and attrs['preferred_airlines']:
             attrs['preferred_airlines'] = attrs['preferred_airlines'].upper().replace(' ', '')
 
@@ -30,7 +28,6 @@ class TrackedRouteSerializer(serializers.ModelSerializer):
         if from_code and to_code and from_code == to_code:
             raise serializers.ValidationError('Origin and destination must differ.')
 
-        # Round trips need a return date that is on/after departure.
         trip_type   = attrs.get('trip_type', getattr(self.instance, 'trip_type', 'ONE_WAY'))
         depart_date = attrs.get('depart_date', getattr(self.instance, 'depart_date', None))
         return_date = attrs.get('return_date', getattr(self.instance, 'return_date', None))
@@ -42,6 +39,5 @@ class TrackedRouteSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Owner always comes from the authenticated request, never the payload.
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)

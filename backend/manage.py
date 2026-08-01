@@ -5,7 +5,6 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # Note: Using 'flightplus.settings' based on your folder spelling
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flightpulse.settings')
     
     try:

@@ -1,11 +1,3 @@
-"""
-Core deal-detection logic — the "transform + compare" stage of the ETL.
-
-check_route_for_deals(route):
-    fetch offers (with optional flexible-date spread), find the cheapest,
-    update bookkeeping on the route, and if it beats the user's price limit
-    create an Alert and dispatch the notification.
-"""
 import logging
 from datetime import timedelta
 from decimal import Decimal

@@ -1,10 +1,3 @@
-"""
-Delivery stage of the pipeline — turns a detected deal into an email/SMS.
-
-dispatch_alert(user, route, offer) honours the user's notify_email / notify_sms
-preferences and returns a report dict, e.g. {'email': True, 'sms': False}.
-A failure on one channel never blocks the other.
-"""
 import logging
 
 from django.conf import settings

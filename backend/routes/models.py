@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
  
-User = get_user_model()   # gets our custom User, not Django's default
+User = get_user_model()  
  
 class TrackedRoute(models.Model):
     CABIN_CHOICES  = [('ECONOMY','Economy'),('PREMIUM_ECONOMY','Premium Economy'),

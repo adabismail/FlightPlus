@@ -19,14 +19,12 @@ export const tokenStore = {
   },
 }
 
-// --- attach bearer token -------------------------------------------
 api.interceptors.request.use((cfg) => {
   const t = tokenStore.access
   if (t) cfg.headers.Authorization = `Bearer ${t}`
   return cfg
 })
 
-// --- transparent refresh on 401 ------------------------------------
 let refreshing = null
 api.interceptors.response.use(
   (res) => res,

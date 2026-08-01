@@ -1,8 +1,4 @@
 # ============================================================
-# FlightPulse backend image — shared by web, worker, and beat.
-# No apt packages needed: psycopg2-binary ships as a wheel, and the
-# Postgres readiness wait in entrypoint.sh is pure Python.
-# ============================================================
 FROM python:3.12-slim
 
 # Faster, cleaner Python in containers

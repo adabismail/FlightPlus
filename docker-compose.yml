@@ -1,13 +1,3 @@
-# ============================================================
-# FlightPulse — 5 application services + an Nginx proxy.
-#   db      : PostgreSQL (persistent store)
-#   redis   : Celery broker
-#   web     : Django + Gunicorn (REST API)
-#   worker  : Celery worker (flight-price ETL tasks)
-#   beat    : Celery Beat (daily schedule)
-#   nginx   : serves React build + reverse-proxies /api, /admin
-# ============================================================
-
 services:
   db:
     image: postgres:16-alpine

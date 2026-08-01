@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined   = models.DateTimeField(auto_now_add=True)
     updated_at    = models.DateTimeField(auto_now=True)
  
-    objects = UserManager()    # plug in our custom manager
+    objects = UserManager()    # plug in custom manager
  
     USERNAME_FIELD  = 'email'  # use email to log in
     REQUIRED_FIELDS = ['name'] # required when creating superuser

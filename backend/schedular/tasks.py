@@ -25,7 +25,7 @@ def check_single_route(self, route_id: int):
     """
     Transform + load stage: fetch live prices for one route, compare against
     the threshold, and persist/deliver an alert if a deal is found.
-    Retries transient failures (e.g. Amadeus hiccups) up to 3 times.
+    Retries transient failures up to 3 times.
     """
     from routes.models import TrackedRoute
     from services.price_checker import check_route_for_deals

@@ -10,7 +10,6 @@ const BLANK = {
   preferred_airlines: '', weekends_only: false,
 }
 
-// Prefill the form when editing an existing route.
 function fromRoute(r) {
   if (!r) return BLANK
   return {
@@ -34,7 +33,6 @@ export default function AddRouteModal({ route, onClose, onSaved }) {
     setForm((f) => ({ ...f, [k]: v }))
   }
 
-  // Uppercase the IATA code and, if it's a known airport, autofill the city.
   const setCode = (codeKey, cityKey) => (e) => {
     const code = e.target.value.toUpperCase().slice(0, 3)
     setForm((f) => ({ ...f, [codeKey]: code, ...(AIRPORT_CITY[code] ? { [cityKey]: AIRPORT_CITY[code] } : {}) }))

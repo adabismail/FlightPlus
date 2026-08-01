@@ -15,7 +15,6 @@ class TrackedRouteViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # CRITICAL: users can only see THEIR OWN routes
         return TrackedRoute.objects.filter(user=self.request.user)
 
     @action(detail=True, methods=['post'])    # POST /routes/5/pause/

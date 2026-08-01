@@ -1,13 +1,3 @@
-"""
-Flight search via the Sky-Scrapper API on RapidAPI.
-
-Sky-Scrapper (a Skyscanner data source) returns real itineraries WITH prices,
-so it powers both the flight details and the price the deal-checker compares
-against the user's threshold. Everything provider-specific lives here.
-
-Flow: resolve each IATA code to Sky-Scrapper's (skyId, entityId) via the
-airport-search endpoint, then call searchFlights and normalize the result.
-"""
 import logging
 from datetime import datetime
 
@@ -46,16 +36,42 @@ def _get(path, params):
 
 
 def resolve_airport(iata):
-    """Map an IATA code (e.g. DEL) to Sky-Scrapper's (skyId, entityId). Cached."""
+    """
+    Map an IATA code (e.g. DEL) to Sky-Scrapper's (skyId, entityId). Cached.
+
+    The IDs live under navigation.relevantFlightParams, and the first result can
+    be a CITY (e.g. "DXB" -> Dubai city). We prefer the AIRPORT entity whose
+    skyId matches the requested code.
+    """
     iata = iata.upper()
     if iata in _AIRPORT_CACHE:
         return _AIRPORT_CACHE[iata]
     data = _get('/api/v1/flights/searchAirport', {'query': iata, 'locale': 'en-US'})
     results = data.get('data') or []
-    if not results:
+
+    def params_of(entry):
+        return (entry.get('navigation') or {}).get('relevantFlightParams') or {}
+
+    def entity_type(entry):
+        return (entry.get('navigation') or {}).get('entityType')
+
+    best = None
+    # 1) exact AIRPORT match on skyId
+    for x in results:
+        if entity_type(x) == 'AIRPORT' and (params_of(x).get('skyId') or '').upper() == iata:
+            best = params_of(x); break
+    # 2) any AIRPORT
+    if not best:
+        for x in results:
+            if entity_type(x) == 'AIRPORT':
+                best = params_of(x); break
+    # 3) fall back to the first result
+    if not best and results:
+        best = params_of(results[0])
+
+    if not best or not best.get('skyId') or not best.get('entityId'):
         return None
-    top = results[0]
-    pair = (top.get('skyId'), top.get('entityId'))
+    pair = (best['skyId'], best['entityId'])
     _AIRPORT_CACHE[iata] = pair
     return pair
 
@@ -80,16 +96,20 @@ def normalize_offer(itinerary, currency):
     """Flatten one Sky-Scrapper itinerary into the shape our Alert model expects."""
     price    = float((itinerary.get('price') or {}).get('raw') or 0)
     leg      = (itinerary.get('legs') or [{}])[0]
-    carrier  = ((leg.get('carriers') or {}).get('marketing') or [{}])[0]
-    code     = str(carrier.get('alternateId') or carrier.get('id') or '')
     segment  = (leg.get('segments') or [{}])[0]
+    # The segment's marketingCarrier carries the real IATA code (displayCode, e.g. "SG");
+    # fall back to the leg-level carrier's alternateId if needed.
+    mc       = segment.get('marketingCarrier') or {}
+    leg_car  = ((leg.get('carriers') or {}).get('marketing') or [{}])[0]
+    code     = str(mc.get('displayCode') or mc.get('alternateId') or leg_car.get('alternateId') or '')
+    name     = mc.get('name') or leg_car.get('name') or ''
     flight_n = segment.get('flightNumber', '')
     return {
         'price':         price,
         'currency':      currency,
-        'airline':       carrier.get('name', ''),
+        'airline':       name,
         'airline_code':  code,
-        'flight_number': f'{code}{flight_n}'.strip(),
+        'flight_number': f'{code} {flight_n}'.strip(),
         'departure_at':  _parse_dt(leg.get('departure')),
         'arrival_at':    _parse_dt(leg.get('arrival')),
         'duration':      _duration_label(leg.get('durationInMinutes')),
@@ -127,7 +147,7 @@ def search_flight_offers(route, depart_date, return_date=None, max_results=10):
             'date':                depart_date.isoformat(),
             'cabinClass':          _CABIN_MAP.get(route.cabin_class, 'economy'),
             'adults':              route.adults,
-            'sortBy':              'cheapest',
+            'sortBy':              'price_low',   # valid values: best, price_low, price_high, fastest, …
             'currency':            route.currency,
         }
         if return_date:
